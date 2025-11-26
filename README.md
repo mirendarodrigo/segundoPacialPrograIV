@@ -50,47 +50,52 @@ Sigue estos pasos para correr el proyecto en tu máquina:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [URL_DE_TU_REPO]
+   git clone https://github.com/mirendarodrigo/segundoPacialPrograIV
    cd segundoParcial
+
 Crear y activar entorno virtual:
 
-Bash
 
+  ```bash
 python -m venv venv
 # Windows:
 venv\Scripts\activate
 # Mac/Linux:
 source venv/bin/activate
 Instalar dependencias:
-
-Bash
+```
+  ```bashh
 
 pip install -r requirements.txt
+```
 Configurar Variables de Entorno (.env): Crea un archivo .env en la raíz y configura tus credenciales:
 
-Fragmento de código
+  ```bash
 
 DEBUG=True
 SECRET_KEY=clave-secreta-local
 EMAIL_USER=tu_gmail@gmail.com
 EMAIL_PASS=tu_contraseña_de_aplicacion
 ADMIN_PASSWORD=admin1234
+```
 Migrar base de datos:
 
-Bash
+  ```bash
 
 python manage.py migrate
 Crear Superusuario (Script automático):
-
-Bash
+```
+  ```bash
 
 python crear_admin.py
+```
 # O manualmente: python manage.py createsuperuser
 Ejecutar servidor:
 
-Bash
+  ```bash
 
 python manage.py runserver
+```
 📂 Estructura del Proyecto
 El proyecto está modularizado en las siguientes aplicaciones:
 

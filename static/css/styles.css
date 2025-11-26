@@ -1,0 +1,125 @@
+/* === ESTILOS GLOBALES === */
+body {
+    background-color: #f4f7f6; /* Gris muy suave, mejor que el blanco puro */
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #495057;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* === TARJETAS (CARDS) === */
+/* Le damos profundidad y bordes redondeados modernos */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    /* Efecto sutil de elevación al pasar el mouse */
+    transform: translateY(-2px); 
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #edf2f7;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* === FORMULARIOS PROFESIONALES === */
+label {
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+/* Inputs más altos y cómodos de escribir */
+.form-control, .form-select {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    background-color: #fcfcfc;
+    transition: all 0.3s ease;
+}
+
+/* Efecto GLOW suave al hacer clic en un input */
+.form-control:focus, .form-select:focus {
+    background-color: #ffffff;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15); /* Azul translúcido */
+    outline: none;
+}
+
+/* Placeholder un poco más claro */
+::placeholder {
+    color: #adb5bd !important;
+    opacity: 1;
+}
+
+/* === BOTONES === */
+.btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+}
+
+/* Botón Primario (Azul) */
+.btn-primary {
+    background-color: #0d6efd;
+    border: none;
+    box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* Botón de Éxito (Verde) */
+.btn-success {
+    background-color: #198754;
+    border: none;
+    box-shadow: 0 4px 6px rgba(25, 135, 84, 0.2);
+}
+
+.btn-success:hover {
+    background-color: #157347;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(25, 135, 84, 0.3);
+}
+
+/* === TABLAS (Alumnos) === */
+.table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e9ecef;
+    border-top: none;
+}
+
+.table tbody td {
+    padding: 1rem 0.75rem;
+    color: #495057;
+    border-bottom: 1px solid #f2f2f2;
+}
