@@ -2,7 +2,7 @@
 
 Este proyecto es una aplicación web full-stack desarrollada con **Django**, diseñada para gestionar alumnos, generar reportes PDF y realizar scraping de datos educativos, con integración de notificaciones por correo electrónico.
 
-🔗 **Link al Deploy (Render):** [PEGAR_AQUI_TU_URL_DE_RENDER]
+🔗 **Link al Deploy (Render):** https://segundopacialprograiv.onrender.com/
 
 ---
 
