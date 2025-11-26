@@ -1,27 +1,20 @@
 from pathlib import Path
-import os           
+import os       
 import environ       
 import dj_database_url 
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 env = environ.Env()
-
+# Leer .env si existe (local)
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
 
 SECRET_KEY = env("SECRET_KEY", default='django-insecure-clave-temporal-local')
 
-
+# IMPORTANTE: DEBUG lee del entorno. En Render será False.
 DEBUG = env.bool("DEBUG", default=False)
 
-
 ALLOWED_HOSTS = ["*"] 
-
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,7 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware', # <--- CRÍTICO
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,15 +71,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'segundoParcial.wsgi.application'
 
-
-
+# Base de datos Híbrida (SQLite Local / Postgres Render)
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
         conn_max_age=600
     )
 }
-
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -96,22 +87,27 @@ AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
-
 LANGUAGE_CODE = 'es-ar' 
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
 
-# --- ARCHIVOS ESTÁTICOS (CRÍTICO PARA RENDER) ---
+# --- ARCHIVOS ESTÁTICOS (CORREGIDO) ---
 STATIC_URL = 'static/'
 
+# 1. Dónde están tus estilos ahora (styles.css)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# 2. Dónde se guardarán al subir a Render
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# 3. Motor de almacenamiento
 if not DEBUG:
-    # Configuración Producción
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 # MEDIA
 MEDIA_URL = '/media/'
@@ -121,9 +117,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGOUT_REDIRECT_URL = '/'
 
+# --- EMAIL HARDCODED (CORREGIDO SIN ESPACIOS) ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mirendarodrigo@gmail.com' 
-EMAIL_HOST_PASSWORD = 'pdxw txoq cegw plja'
+# ¡¡SIN ESPACIOS!!
+EMAIL_HOST_PASSWORD = 'pdxwtxoqcegwplja'
