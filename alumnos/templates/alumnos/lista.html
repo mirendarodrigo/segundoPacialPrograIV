@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Listado de Alumnos</h2>
+<a href="{% url 'crear_alumno' %}" class="btn btn-primary mb-3">Nuevo Alumno</a>
+
+<table class="table">
+    <thead>
+        <tr><th>Nombre</th><th>Legajo</th><th>Carrera</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+        {% for a in alumnos %}
+        <tr>
+            <td>{{ a.nombre }}</td>
+            <td>{{ a.legajo }}</td>
+            <td>{{ a.carrera }}</td>
+            <td>
+                <a href="{% url 'enviar_pdf' a.id %}" class="btn btn-warning btn-sm">
+                    ✉️ Enviar PDF
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

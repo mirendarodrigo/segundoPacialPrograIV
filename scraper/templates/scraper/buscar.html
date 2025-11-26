@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        
+        <div class="card p-4 mb-4 bg-light">
+            <h2 class="text-center mb-3">🔍 Scraper de Wikipedia</h2>
+            <form method="get" class="d-flex">
+                <input class="form-control me-2" type="search" name="q" placeholder="Ej: Python, Messi, Argentina..." aria-label="Search" required>
+                <button class="btn btn-primary" type="submit">Buscar</button>
+            </form>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-warning" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if mensaje %}
+            <div class="alert alert-success">
+                {{ mensaje }}
+            </div>
+        {% endif %}
+
+        {% if data %}
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                Resultados encontrados
+            </div>
+            <div class="card-body">
+                
+                {% if data.imagen %}
+                    <div class="text-center mb-3">
+                        <img src="{{ data.imagen }}" class="img-thumbnail" style="max-height: 200px;">
+                    </div>
+                {% endif %}
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 20%;">Título</th>
+                        <td>{{ data.titulo }}</td>
+                    </tr>
+                    <tr>
+                        <th>Resumen</th>
+                        <td>{{ data.descripcion }}</td>
+                    </tr>
+                </table>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    
+                    <a href="{{ data.url_origen }}" target="_blank" class="btn btn-outline-secondary">
+                        🔗 Ver original
+                    </a>
+
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="titulo_hidden" value="{{ data.titulo }}">
+                        <input type="hidden" name="desc_hidden" value="{{ data.descripcion }}">
+                        <button type="submit" class="btn btn-success">
+                            📩 Enviar por correo
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

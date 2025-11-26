@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="alert alert-success">
+    <h1>Panel Privado</h1>
+    <p>¡Bienvenido al área restringida, <strong>{{ user.username }}</strong>!</p>
+    <p>Solo puedes ver esto si pasaste el login_required.</p>
+</div>
+{% endblock %}

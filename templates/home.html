@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold">Segundo Parcial - Django</h1>
+        <p class="col-md-8 fs-4">Sistema de gestión académica y herramientas de investigación.</p>
+        
+        {% if not user.is_authenticated %}
+            <hr class="my-4">
+            <p>Para acceder a las funciones del sistema, necesitas identificarte.</p>
+            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Iniciar Sesión</a>
+            <a class="btn btn-outline-secondary btn-lg" href="{% url 'registro' %}" role="button">Registrarse</a>
+        {% else %}
+            <p class="text-success fw-bold">¡Hola, {{ user.username }}! El sistema está listo.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<div class="row align-items-md-stretch">
+    
+    <div class="col-md-6 mb-4">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+            <h2>🎓 Gestión de Alumnos</h2>
+            <p>Accede al listado completo de estudiantes. Desde aquí podrás:</p>
+            <ul>
+                <li>Cargar nuevos alumnos.</li>
+                <li>Ver sus datos (Legajo, Carrera).</li>
+                <li><strong>Generar y enviar reportes PDF</strong> por correo.</li>
+            </ul>
+            <a href="{% url 'listar_alumnos' %}" class="btn btn-outline-light" type="button">Ir a Alumnos</a>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="h-100 p-5 bg-light border rounded-3">
+            <h2>🔍 Scraper Educativo</h2>
+            <p>Herramienta de investigación integrada con Wikipedia.</p>
+            <ul>
+                <li>Busca definiciones en tiempo real.</li>
+                <li>Visualiza resúmenes e imágenes.</li>
+                <li><strong>Envía los resultados</strong> a tu casilla de correo.</li>
+            </ul>
+            <a href="{% url 'scraper' %}" class="btn btn-primary" type="button">Ir al Buscador</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

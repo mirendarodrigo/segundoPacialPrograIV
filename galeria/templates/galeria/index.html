@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Galería de Fotos</h2>
+
+<div class="card p-4 mb-4 bg-light">
+    <h4>Subir nueva foto</h4>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Subir Imagen</button>
+    </form>
+</div>
+
+<div class="row">
+    {% for foto in fotos %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+        
+        <a href="{{ foto.imagen.url }}" target="_blank">
+            <img src="{{ foto.imagen.url }}" class="card-img-top" alt="{{ foto.titulo }}" style="height: 200px; object-fit: cover;">
+        </a>
+
+        <div class="card-body">
+            <h5 class="card-title">{{ foto.titulo }}</h5>
+        </div>
+        
+        <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+            <a href="{% url 'editar_foto' foto.id %}" class="btn btn-outline-primary btn-sm">Editar</a>
+            <a href="{% url 'borrar_foto' foto.id %}" class="btn btn-outline-danger btn-sm">Borrar</a>
+        </div>
+
+    </div>
+</div>
+    {% endfor %}
+</div>
+{% endblock %}
