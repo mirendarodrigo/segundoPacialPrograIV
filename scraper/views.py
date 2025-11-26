@@ -1,44 +1,50 @@
+import threading # <--- Importar
 import requests
 from bs4 import BeautifulSoup
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
 
+# Función auxiliar (Igual que en cuentas)
+def enviar_mail_async(asunto, mensaje, origen, destino):
+    try:
+        send_mail(asunto, mensaje, origen, destino, fail_silently=True)
+    except:
+        pass
+
 def buscar_view(request):
     data = None
     error = None
     mensaje = None
 
-    # ---------------------------------------------------------
-    # LÓGICA DE ENVÍO DE CORREO (POST)
-    # ---------------------------------------------------------
+    # --- ENVÍO DE CORREO (POST) CON THREADING ---
     if request.method == 'POST':
         titulo = request.POST.get('titulo_hidden')
         descripcion = request.POST.get('desc_hidden')
         
-        # Si el usuario está logueado usa su email, si no, uno por defecto o el del admin
         email_destino = request.user.email if request.user.is_authenticated else settings.EMAIL_HOST_USER
-
-        try:
-            send_mail(
+        
+        # Hilo para que no de Timeout
+        task = threading.Thread(
+            target=enviar_mail_async,
+            args=(
                 f'Resultado Scraping: {titulo}',
                 f'Aquí tienes el resumen encontrado:\n\n{descripcion}',
                 settings.EMAIL_HOST_USER,
-                [email_destino],
-                fail_silently=False,
+                [email_destino]
             )
-            mensaje = "¡El resultado ha sido enviado a tu correo!"
-        except Exception as e:
-            error = f"Error al enviar el correo: {str(e)}"
+        )
+        task.start()
+        
+        mensaje = "¡El correo se está enviando en segundo plano!"
 
-    # ---------------------------------------------------------
-    # LÓGICA DE SCRAPING (GET)
-    # ---------------------------------------------------------
+    # --- LÓGICA DE SCRAPING (GET) ---
     query = request.GET.get('q')
 
     if query:
         url = "https://es.wikipedia.org/w/index.php"
         params = {'search': query}
+        # Cabeceras para que Wikipedia no nos bloquee
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
@@ -48,13 +54,15 @@ def buscar_view(request):
 
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
-
+                
+                # Extracción de Título
                 titulo_tag = soup.find('h1', {'id': 'firstHeading'})
                 titulo = titulo_tag.text if titulo_tag else "Sin título"
 
                 if "Resultados de la búsqueda" in titulo:
                     error = "La búsqueda fue ambigua. Intenta ser más específico."
                 else:
+                    # Extracción de Imagen
                     imagen_url = None
                     tabla_info = soup.find('table', {'class': 'infobox'})
                     if tabla_info:
@@ -62,6 +70,7 @@ def buscar_view(request):
                         if img_tag:
                             imagen_url = "https:" + img_tag['src']
 
+                    # Extracción de Descripción
                     descripcion = "No se encontró descripción."
                     parrafos = soup.find_all('p')
                     for p in parrafos:
@@ -77,7 +86,6 @@ def buscar_view(request):
                     }
             else:
                 error = "No se pudo acceder a Wikipedia."
-
         except Exception as e:
             error = "Ocurrió un error inesperado de conexión."
 
