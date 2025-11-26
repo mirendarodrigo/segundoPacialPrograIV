@@ -50,7 +50,7 @@ Sigue estos pasos para correr el proyecto en tu máquina:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [URL_DE_TU_REPO]
+   git clone https://github.com/mirendarodrigo/segundoPacialPrograIV
    cd segundoParcial
 Crear y activar entorno virtual:
 
