@@ -117,11 +117,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGOUT_REDIRECT_URL = '/'
 
-# --- EMAIL HARDCODED (CORREGIDO SIN ESPACIOS) ---
+# --------------------------------------------------------
+# CONFIGURACIÓN DE EMAIL PROFESIONAL (BREVO)
+# --------------------------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mirendarodrigo@gmail.com' 
-# ¡¡SIN ESPACIOS!!
-EMAIL_HOST_PASSWORD = 'pdxwtxoqcegwplja'
+
+# Tu usuario de login en Brevo (tu correo)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# La clave larga que acabas de generar en el panel SMTP
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+# IMPORTANTE: Brevo exige que el remitente sea un email validado
+# Por defecto usa tu propio email de registro
+DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
