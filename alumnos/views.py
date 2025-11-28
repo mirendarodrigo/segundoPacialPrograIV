@@ -1,13 +1,36 @@
 import io
+import threading # <--- IMPORTANTE
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.conf import settings
 from .models import Alumno
-from .forms import AlumnoForm 
+from .forms import AlumnoForm
+
+# ReportLab
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import letter
+
+# --- FUNCIÓN AUXILIAR PARA ENVIAR PDF EN SEGUNDO PLANO ---
+def enviar_pdf_async(asunto, cuerpo, origen, destino, nombre_archivo, contenido_pdf):
+    try:
+        email = EmailMessage(
+            asunto,
+            cuerpo,
+            origen,
+            destino,
+        )
+        # Adjuntamos el PDF (nombre, bytes, tipo mime)
+        email.attach(nombre_archivo, contenido_pdf, 'application/pdf')
+        email.send(fail_silently=True)
+        print(f">>> PDF de {nombre_archivo} enviado con éxito en segundo plano.")
+    except Exception as e:
+        print(f">>> Error enviando PDF: {e}")
+
+# ===========================================================
+# VISTAS
+# ===========================================================
 
 @login_required
 def listar_alumnos(request):
@@ -29,7 +52,7 @@ def crear_alumno(request):
 def enviar_pdf_alumno(request, id):
     alumno = get_object_or_404(Alumno, id=id)
 
-    # 1. Generar PDF en Memoria (Buffer)
+    # 1. Generar PDF en Memoria (Esto es rápido, lo hacemos aquí)
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
@@ -43,20 +66,26 @@ def enviar_pdf_alumno(request, id):
 
     doc.build(elements)
     
-    # 2. Obtener el valor binario del PDF
+    # Obtenemos los bytes del PDF
     pdf_content = buffer.getvalue()
     buffer.close()
 
-    # 3. Armar el correo con adjunto
-    email = EmailMessage(
-        f'Reporte PDF de {alumno.nombre}', # Asunto
-        'Adjunto encontrarás la ficha del alumno solicitado.', # Cuerpo
-        settings.EMAIL_HOST_USER, # Desde
-        [request.user.email], # Hacia (se lo mandamos al usuario logueado)
-    )
+    # 2. Enviar por correo usando THREADING (Segundo Plano)
+    # Definimos el destino: el usuario logueado o el propio alumno (según prefieras)
+    email_destino = [request.user.email] 
     
-    # Adjuntamos: nombre_archivo, contenido, tipo mime
-    email.attach(f'alumno_{alumno.id}.pdf', pdf_content, 'application/pdf')
-    email.send()
+    task = threading.Thread(
+        target=enviar_pdf_async,
+        args=(
+            f'Reporte PDF de {alumno.nombre}',            # Asunto
+            'Adjunto encontrarás la ficha del alumno.',   # Cuerpo
+            settings.EMAIL_HOST_USER,                     # Origen
+            email_destino,                                # Destino
+            f'alumno_{alumno.id}.pdf',                    # Nombre Archivo
+            pdf_content                                   # Contenido (Bytes)
+        )
+    )
+    task.start() # ¡Dispara y olvida!
 
+    # 3. Redirigir inmediatamente (Usuario feliz)
     return redirect('listar_alumnos')
